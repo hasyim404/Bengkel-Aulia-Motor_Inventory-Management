@@ -70,7 +70,7 @@ const Kategori = () => {
           text: `Nama kategori duplikat...`,
           icon: "warning",
         }).then(() => {
-          window.location.reload();
+          // window.location.reload();
         });
       } else {
         Swal.fire({
@@ -78,7 +78,7 @@ const Kategori = () => {
           text: `Gagal karena ${error.response.data.message}`,
           icon: "error",
         }).then(() => {
-          window.location.reload();
+          // window.location.reload();
         });
       }
     }
@@ -140,7 +140,7 @@ const Kategori = () => {
         text: `Gagal karena ${error.response.data.message}`,
         icon: "error",
       }).then(() => {
-        window.location.reload();
+        // window.location.reload();
       });
     }
   };

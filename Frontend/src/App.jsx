@@ -5,11 +5,8 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import KelolaBarang from "./pages/Kelola Barang/KelolaBarang";
 
 import MerkProduk from "./pages/Kelola Produk/MerkProduk";
-import EditMerk from "./pages/Kelola Produk/Edit/EditMerk";
 import Kategori from "./pages/Kelola Produk/Kategori";
-import EditKategori from "./pages/Kelola Produk/Edit/EditKategori";
 import Ukuran from "./pages/Kelola Produk/Ukuran";
-import EditUkuran from "./pages/Kelola Produk/Edit/EditUkuran";
 import LaporanPemasukan from "./pages/Laporan Keuangan/Pemasukan";
 import LaporanPengeluaran from "./pages/Laporan Keuangan/Pengeluaran";
 import KelolaUsers from "./pages/Kelola Users/KelolaUsers";
@@ -17,7 +14,6 @@ import Blank from "./pages/Blank";
 
 import LoginPage from "./pages/Login/LoginPage";
 import { UserProvider } from "./context/UserContext";
-import EditKelolaBarang from "./pages/Kelola Barang/EditKelolaBarang";
 
 const isAuthenticated = () => {
   return localStorage.getItem("token") !== null;
@@ -56,28 +52,12 @@ const App = () => {
               isAuthenticated() ? <KelolaBarang /> : <Navigate to="/login" />
             }
           />
-          <Route
-            path="/kelola-barang/edit/:id"
-            element={
-              isAuthenticated() ? (
-                <EditKelolaBarang />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
 
           {/* Merk */}
           <Route
             path="/kelola-produk/merk"
             element={
               isAuthenticated() ? <MerkProduk /> : <Navigate to="/login" />
-            }
-          />
-          <Route
-            path="/kelola-produk/merk/edit/:id"
-            element={
-              isAuthenticated() ? <EditMerk /> : <Navigate to="/login" />
             }
           />
 
@@ -88,23 +68,11 @@ const App = () => {
               isAuthenticated() ? <Kategori /> : <Navigate to="/login" />
             }
           />
-          <Route
-            path="/kelola-produk/kategori/edit/:id"
-            element={
-              isAuthenticated() ? <EditKategori /> : <Navigate to="/login" />
-            }
-          />
 
           {/* Ukuran */}
           <Route
             path="/kelola-produk/ukuran"
             element={isAuthenticated() ? <Ukuran /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/kelola-produk/ukuran/edit/:id"
-            element={
-              isAuthenticated() ? <EditUkuran /> : <Navigate to="/login" />
-            }
           />
 
           {/* Laporan keuangan */}

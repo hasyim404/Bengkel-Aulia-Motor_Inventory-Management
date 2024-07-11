@@ -15,10 +15,12 @@ import Zoom from "react-medium-image-zoom";
 import Subnav from "../../components/Subnav";
 import MainTitle from "../../components/MainTitle";
 import Pagination from "../../components/Pagination/Pagination";
+import NoData from "../../components/NoData";
 
 const Dashboard = () => {
   const [barang, setBarang] = useState([]);
   const [terendah, setTerendah] = useState([]);
+  const [pemasukan, setPemasukan] = useState([]);
 
   const getBarang = async () => {
     const response = await axios.get("http://localhost:1023/api/v1/barang");
@@ -26,8 +28,29 @@ const Dashboard = () => {
     setTerendah(response.data.terendah);
   };
 
+  const getPemasukan = async () => {
+    const response = await axios.get("http://localhost:1023/api/v1/pemasukan");
+    setPemasukan(response.data.data);
+  };
+
+  pemasukan.forEach((data) => {
+    data.tgl = new Date(data.tgl);
+  });
+
+  const currentDate = new Date();
+  const targetMonth = currentDate.getMonth();
+  const targetYear = currentDate.getYear();
+  const filteredData = pemasukan.filter((data) => {
+    const dataMonth = data.tgl.getMonth(); // Bulan data (0-based index)
+    const dataYear = data.tgl.getYear(); // Bulan data (0-based index)
+    return dataMonth === targetMonth && dataYear === targetYear;
+  });
+
+  const total = filteredData.reduce((acc, curr) => acc + curr.pemasukan, 0);
+
   useEffect(() => {
     getBarang();
+    getPemasukan();
   }, []);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -135,7 +158,7 @@ const Dashboard = () => {
                       Pemasukan Bulanan
                     </h3>
                     <p className="text-3xl font-semibold text-color-5">
-                      {toIDR.format("4000000")}
+                      {toIDR.format(total)}
                     </p>
                   </div>
                   <div className="ps-3"></div>
@@ -159,78 +182,87 @@ const Dashboard = () => {
                   <div className="-m-1.5 overflow-x-auto">
                     <div className="p-1.5 min-w-full inline-block align-middle">
                       <div className="border rounded-lg">
-                        <div className="overflow-hidden">
-                          <table className="min-w-full divide-y ">
-                            <thead className=" dark:bg-color-6">
-                              <tr>
-                                <th
-                                  scope="col"
-                                  className="px-6 py-3 text-center text-sm font-bold text-color-5 uppercase"
-                                >
-                                  No
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-6 py-3 text-start text-sm font-bold text-color-5 uppercase"
-                                >
-                                  Nama Barang
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-6 py-3 text-center text-sm font-boldtext-color-5 uppercase"
-                                >
-                                  Stok
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-6 py-3 text-center text-sm font-boldtext-color-5 uppercase"
-                                >
-                                  Gambar
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody className="divide-y">
-                              {records.map((item, index) => (
-                                <tr key={index} className="text-center ">
-                                  <td className="py-4 whitespace-nowrap text-sm font-medium text-color-5">
-                                    {index +
-                                      1 +
-                                      (currentPage - 1) * recordsPerPage}
-                                    .
-                                  </td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-color-5 text-start">
-                                    {item.n_barang}
-                                  </td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-color-5">
-                                    {item.jml_stok} -/{item.tipe_stok}
-                                  </td>
-                                  <td className="flex justify-center items-center px-6 py-4 whitespace-nowrap text-sm ">
-                                    <Zoom>
-                                      <img
-                                        className="w-20 p-1 rounded-s-md border border-color-2 disabled:opacity-50 disabled:pointer-events-none dark:bg-color-2 dark:text-gray-400 dark:focus:ring-color-2"
-                                        src={
-                                          item.img
-                                            ? item.img
-                                            : "./src/assets/no-preview.png"
-                                        }
-                                      />
-                                    </Zoom>
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                        <Pagination
-                          currentPage={currentPage}
-                          setCurrentPage={setCurrentPage}
-                          npage={npage}
-                          data={
-                            barang.filter((item) => item.jml_stok <= 7).length
-                          }
-                          show={records.length}
-                          setName={"Barang"}
-                        />
+                        {records != 0 ? (
+                          <>
+                            <div className="overflow-hidden">
+                              <table className="min-w-full divide-y ">
+                                <thead className=" dark:bg-color-6">
+                                  <tr>
+                                    <th
+                                      scope="col"
+                                      className="px-6 py-3 text-center text-sm font-bold text-color-5 uppercase"
+                                    >
+                                      No
+                                    </th>
+                                    <th
+                                      scope="col"
+                                      className="px-6 py-3 text-start text-sm font-bold text-color-5 uppercase"
+                                    >
+                                      Nama Barang
+                                    </th>
+                                    <th
+                                      scope="col"
+                                      className="px-6 py-3 text-center text-sm font-boldtext-color-5 uppercase"
+                                    >
+                                      Stok
+                                    </th>
+                                    <th
+                                      scope="col"
+                                      className="px-6 py-3 text-center text-sm font-boldtext-color-5 uppercase"
+                                    >
+                                      Gambar
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y">
+                                  {records.map((item, index) => (
+                                    <tr key={index} className="text-center ">
+                                      <td className="py-4 whitespace-nowrap text-sm font-medium text-color-5">
+                                        {index +
+                                          1 +
+                                          (currentPage - 1) * recordsPerPage}
+                                        .
+                                      </td>
+                                      <td className="px-6 py-4 whitespace-nowrap text-sm text-color-5 text-start">
+                                        {item.n_barang}
+                                      </td>
+                                      <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-color-5">
+                                        {item.jml_stok} -/{item.tipe_stok}
+                                      </td>
+                                      <td className="flex justify-center items-center px-6 py-4 whitespace-nowrap text-sm ">
+                                        <Zoom>
+                                          <img
+                                            className="w-20 p-1 rounded-s-md border border-color-2 disabled:opacity-50 disabled:pointer-events-none dark:bg-color-2 dark:text-gray-400 dark:focus:ring-color-2"
+                                            src={
+                                              item.img
+                                                ? item.img
+                                                : "./src/assets/no-preview.png"
+                                            }
+                                          />
+                                        </Zoom>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                            <Pagination
+                              currentPage={currentPage}
+                              setCurrentPage={setCurrentPage}
+                              npage={npage}
+                              data={
+                                barang.filter((item) => item.jml_stok <= 7)
+                                  .length
+                              }
+                              show={records.length}
+                              setName={"Barang"}
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <NoData name={"Barang"} />
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>

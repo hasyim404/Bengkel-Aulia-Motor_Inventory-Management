@@ -9,7 +9,15 @@ const NoData = (props) => {
     <div className="flex flex-col mx-auto size-full">
       <div className="text-center py-24 px-4 sm:px-6 lg:px-8">
         <h1 className="block text-7xl font-bold text-color-1 sm:text-9xl dark:text-color-1">
-          <FontAwesomeIcon icon={faDolly} />
+          {props.icon === undefined ? (
+            <>
+              <FontAwesomeIcon icon={faDolly} />
+            </>
+          ) : (
+            <>
+              <FontAwesomeIcon icon={props.icon} />
+            </>
+          )}
         </h1>
         <p className="mt-3 text-color-5 dark:text-color-5">
           {`Wah data ${props.name} belum ada nih...`}

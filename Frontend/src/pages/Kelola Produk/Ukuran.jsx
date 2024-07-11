@@ -68,7 +68,7 @@ const Ukuran = () => {
           text: `Nama ukuran duplikat...`,
           icon: "warning",
         }).then(() => {
-          window.location.reload();
+          // window.location.reload();
         });
       } else {
         Swal.fire({
@@ -76,7 +76,7 @@ const Ukuran = () => {
           text: `Gagal karena ${error.response.data.message}`,
           icon: "error",
         }).then(() => {
-          window.location.reload();
+          // window.location.reload();
         });
       }
     }
@@ -130,7 +130,7 @@ const Ukuran = () => {
         text: `Gagal karena ${error.response.data.message}`,
         icon: "error",
       }).then(() => {
-        window.location.reload();
+        // window.location.reload();
       });
     }
   };

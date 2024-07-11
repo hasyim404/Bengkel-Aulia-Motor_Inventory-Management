@@ -80,7 +80,7 @@ const MerkProduk = () => {
           text: `Nama Merk duplikat...`,
           icon: "warning",
         }).then(() => {
-          window.location.reload();
+          // window.location.reload();
         });
       } else {
         Swal.fire({
@@ -88,7 +88,7 @@ const MerkProduk = () => {
           text: `Gagal karena ${error.response.data.message}`,
           icon: "error",
         }).then(() => {
-          window.location.reload();
+          // window.location.reload();
         });
       }
     }
@@ -164,7 +164,7 @@ const MerkProduk = () => {
         text: `Gagal karena ${error.response.data.message}`,
         icon: "error",
       }).then(() => {
-        window.location.reload();
+        // window.location.reload();
       });
     }
   };

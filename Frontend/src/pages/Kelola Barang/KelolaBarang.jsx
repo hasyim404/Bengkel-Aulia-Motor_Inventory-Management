@@ -108,7 +108,7 @@ const KelolaBarang = () => {
           text: `Nama Barang duplikat...`,
           icon: "warning",
         }).then(() => {
-          window.location.reload();
+          // window.location.reload();
         });
       } else {
         Swal.fire({
@@ -116,7 +116,7 @@ const KelolaBarang = () => {
           text: `Gagal karena ${error.response.data.message}`,
           icon: "error",
         }).then(() => {
-          window.location.reload();
+          // window.location.reload();
         });
       }
     }
