@@ -18,20 +18,14 @@ const signToken = (userId) => {
 };
 
 const formatPhoneNumber = (phoneNumber) => {
-  // Hilangkan semua spasi, tanda kurung, dan strip
   phoneNumber = phoneNumber.replace(/[\s\(\)\-]/g, "");
 
-  // Jika angka depan 0, ganti dengan 62
   if (/^0/.test(phoneNumber)) {
     phoneNumber = phoneNumber.replace(/^0/, "62");
-  }
-
-  // Jika angka depan +, hilangkan
-  else if (/^\+/.test(phoneNumber)) {
+  } else if (/^\+/.test(phoneNumber)) {
     phoneNumber = phoneNumber.replace(/^\+/, "");
   }
 
-  // Validasi nomor telepon
   const validFormat = /^62\d{9,13}$/.test(phoneNumber);
   if (!validFormat) {
     return "Format nomor telepon tidak valid";
@@ -100,7 +94,7 @@ const register = async (req, res) => {
       ]
     );
 
-    const token = signToken(resultId); // Gunakan resultId langsung
+    const token = signToken(resultId);
 
     return res.status(200).json({
       success: true,
