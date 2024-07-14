@@ -18,6 +18,8 @@ import Pagination from "../../components/Pagination/Pagination";
 import NoData from "../../components/NoData";
 
 const Dashboard = () => {
+  const [loading, setLoading] = useState(true);
+
   const [barang, setBarang] = useState([]);
   const [terendah, setTerendah] = useState([]);
   const [pemasukan, setPemasukan] = useState([]);
@@ -26,11 +28,13 @@ const Dashboard = () => {
     const response = await axios.get("http://localhost:1023/api/v1/barang");
     setBarang(response.data.data);
     setTerendah(response.data.terendah);
+    setLoading(false);
   };
 
   const getPemasukan = async () => {
     const response = await axios.get("http://localhost:1023/api/v1/pemasukan");
     setPemasukan(response.data.data);
+    setLoading(false);
   };
 
   pemasukan.forEach((data) => {
@@ -182,85 +186,105 @@ const Dashboard = () => {
                   <div className="-m-1.5 overflow-x-auto">
                     <div className="p-1.5 min-w-full inline-block align-middle">
                       <div className="border rounded-lg">
-                        {records != 0 ? (
+                        {loading === true ? (
                           <>
-                            <div className="overflow-hidden">
-                              <table className="min-w-full divide-y ">
-                                <thead className=" dark:bg-color-6">
-                                  <tr>
-                                    <th
-                                      scope="col"
-                                      className="px-6 py-3 text-center text-sm font-bold text-color-5 uppercase"
-                                    >
-                                      No
-                                    </th>
-                                    <th
-                                      scope="col"
-                                      className="px-6 py-3 text-start text-sm font-bold text-color-5 uppercase"
-                                    >
-                                      Nama Barang
-                                    </th>
-                                    <th
-                                      scope="col"
-                                      className="px-6 py-3 text-center text-sm font-boldtext-color-5 uppercase"
-                                    >
-                                      Stok
-                                    </th>
-                                    <th
-                                      scope="col"
-                                      className="px-6 py-3 text-center text-sm font-boldtext-color-5 uppercase"
-                                    >
-                                      Gambar
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody className="divide-y">
-                                  {records.map((item, index) => (
-                                    <tr key={index} className="text-center ">
-                                      <td className="py-4 whitespace-nowrap text-sm font-medium text-color-5">
-                                        {index +
-                                          1 +
-                                          (currentPage - 1) * recordsPerPage}
-                                        .
-                                      </td>
-                                      <td className="px-6 py-4 whitespace-nowrap text-sm text-color-5 text-start">
-                                        {item.n_barang}
-                                      </td>
-                                      <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-color-5">
-                                        {item.jml_stok} -/{item.tipe_stok}
-                                      </td>
-                                      <td className="flex justify-center items-center px-6 py-4 whitespace-nowrap text-sm ">
-                                        <Zoom>
-                                          <img
-                                            className="w-20 p-1 rounded-s-md border border-color-2 disabled:opacity-50 disabled:pointer-events-none dark:bg-color-2 dark:text-gray-400 dark:focus:ring-color-2"
-                                            src={
-                                              item.img
-                                                ? item.img
-                                                : "./src/assets/no-preview.png"
-                                            }
-                                          />
-                                        </Zoom>
-                                      </td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
+                            <div className="w-full py-28">
+                              <div className="flex justify-center animate-pulse">
+                                <img
+                                  src="./src/assets/loading.webp"
+                                  style={{ width: "50%" }}
+                                  alt=""
+                                />
+                              </div>
                             </div>
-                            <Pagination
-                              currentPage={currentPage}
-                              setCurrentPage={setCurrentPage}
-                              npage={npage}
-                              data={
-                                barang.filter((item) => item.jml_stok <= 7)
-                                  .length
-                              }
-                              show={records.length}
-                              setName={"Barang"}
-                            />
                           </>
                         ) : (
                           <>
-                            <NoData name={"Barang"} />
+                            {records != 0 ? (
+                              <>
+                                <div className="overflow-hidden">
+                                  <table className="min-w-full divide-y ">
+                                    <thead className=" dark:bg-color-6">
+                                      <tr>
+                                        <th
+                                          scope="col"
+                                          className="px-6 py-3 text-center text-sm font-bold text-color-5 uppercase"
+                                        >
+                                          No
+                                        </th>
+                                        <th
+                                          scope="col"
+                                          className="px-6 py-3 text-start text-sm font-bold text-color-5 uppercase"
+                                        >
+                                          Nama Barang
+                                        </th>
+                                        <th
+                                          scope="col"
+                                          className="px-6 py-3 text-center text-sm font-boldtext-color-5 uppercase"
+                                        >
+                                          Stok
+                                        </th>
+                                        <th
+                                          scope="col"
+                                          className="px-6 py-3 text-center text-sm font-boldtext-color-5 uppercase"
+                                        >
+                                          Gambar
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody className="divide-y">
+                                      {records.map((item, index) => (
+                                        <tr
+                                          key={index}
+                                          className="text-center "
+                                        >
+                                          <td className="py-4 whitespace-nowrap text-sm font-medium text-color-5">
+                                            {index +
+                                              1 +
+                                              (currentPage - 1) *
+                                                recordsPerPage}
+                                            .
+                                          </td>
+                                          <td className="px-6 py-4 whitespace-nowrap text-sm text-color-5 text-start">
+                                            {item.n_barang}
+                                          </td>
+                                          <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-color-5">
+                                            {item.jml_stok} -/{item.tipe_stok}
+                                          </td>
+                                          <td className="flex justify-center items-center px-6 py-4 whitespace-nowrap text-sm ">
+                                            <Zoom>
+                                              <img
+                                                className="w-20 p-1 rounded-s-md border border-color-2 disabled:opacity-50 disabled:pointer-events-none dark:bg-color-2 dark:text-gray-400 dark:focus:ring-color-2"
+                                                src={
+                                                  item.img
+                                                    ? item.img
+                                                    : "./src/assets/no-preview.png"
+                                                }
+                                              />
+                                            </Zoom>
+                                          </td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
+                                <Pagination
+                                  currentPage={currentPage}
+                                  setCurrentPage={setCurrentPage}
+                                  npage={npage}
+                                  data={
+                                    barang.filter((item) => item.jml_stok <= 7)
+                                      .length
+                                  }
+                                  show={records.length}
+                                  setName={"Barang"}
+                                />
+                              </>
+                            ) : (
+                              <>
+                                <NoData name={"Barang"} />
+                              </>
+                            )}
                           </>
                         )}
                       </div>
@@ -282,86 +306,74 @@ const Dashboard = () => {
                   color="text-color-4"
                 />
               </div>
-              <div className="flex justify-center items-center">
-                <Pie
-                  data={{
-                    labels: barang
-                      .filter((item) => item.jml_stok)
-                      .splice(0, 4)
-                      .map((item) => item.n_barang),
-                    datasets: [
-                      {
-                        label: "stok",
-                        data: barang
+              {/* Diagram */}
+              {loading === true ? (
+                <>
+                  <div className="w-full py-28">
+                    <div className="flex justify-center animate-pulse">
+                      <img
+                        src="./src/assets/loading.webp"
+                        style={{ width: "50%" }}
+                        alt=""
+                      />
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex justify-center items-center">
+                    <Pie
+                      data={{
+                        labels: barang
                           .filter((item) => item.jml_stok)
                           .splice(0, 4)
-                          .map((item) => item.jml_stok),
-                        backgroundColor: backgroundColor,
-                        borderColor: borderColor,
-                        borderWidth: 1,
-                      },
-                    ],
-                  }}
-                />
-              </div>
-              <div className="p-4 md:p-5 font-normal text-sm capitalize ">
-                <p className="font-bold">Jumlah:</p>
-                <div className="flex flex-wrap -mx-4">
-                  {barang
-                    .filter((item) => item.jml_stok)
-                    .splice(0, 4)
-                    .map((item, index) => (
-                      <div className="flex items-center ml-5 my-2" key={index}>
-                        <div
-                          className="p-3"
-                          style={{
-                            background:
-                              backgroundColor[index % backgroundColor.length],
-                          }}
-                        ></div>
-                        <p className="ml-2">
-                          {item.n_barang}: {item.jml_stok}
-                        </p>
-                      </div>
-                    ))}
-
-                  {/* <div className="flex items-center ml-5 my-2">
-                    <div
-                      className="p-3"
-                      style={{ background: "rgba(54, 162, 235, 0.9)" }}
-                    ></div>
-                    <p className="ml-2">Kabel: 10</p>
+                          .map((item) => item.n_barang),
+                        datasets: [
+                          {
+                            label: "stok",
+                            data: barang
+                              .filter((item) => item.jml_stok)
+                              .splice(0, 4)
+                              .map((item) => item.jml_stok),
+                            backgroundColor: backgroundColor,
+                            borderColor: borderColor,
+                            borderWidth: 1,
+                          },
+                        ],
+                      }}
+                    />
                   </div>
-
-                  <div className="flex items-center ml-5 my-2">
-                    <div
-                      className="p-3"
-                      style={{ background: "rgba(255, 206, 86, 0.9)" }}
-                    ></div>
-                    <p className="ml-2">Powerbank: 10</p>
+                  <div className="p-4 md:p-5 font-normal text-sm capitalize ">
+                    <p className="font-bold">Jumlah:</p>
+                    <div className="flex flex-wrap -mx-4">
+                      {barang
+                        .filter((item) => item.jml_stok)
+                        .splice(0, 4)
+                        .map((item, index) => (
+                          <div
+                            className="flex items-center ml-5 my-2"
+                            key={index}
+                          >
+                            <div
+                              className="p-3"
+                              style={{
+                                background:
+                                  backgroundColor[
+                                    index % backgroundColor.length
+                                  ],
+                              }}
+                            ></div>
+                            <p className="ml-2">
+                              {item.n_barang}: {item.jml_stok}
+                            </p>
+                          </div>
+                        ))}
+                    </div>
                   </div>
-
-                  <div className="flex items-center ml-5 my-2">
-                    <div
-                      className="p-3"
-                      style={{ background: "rgba(75, 192, 192, 0.9)" }}
-                    ></div>
-                    <p className="ml-2">Buds: 10</p>
-                  </div>
-
-                  <div className="flex items-center ml-5 my-2">
-                    <div
-                      className="p-3"
-                      style={{ background: "rgba(153, 102, 255, 0.9)" }}
-                    ></div>
-                    <p className="ml-2">Voucher: 10</p>
-                  </div> */}
-                </div>
-              </div>
+                </>
+              )}
             </div>
           </div>
-
-          {/* Diagram */}
         </div>
       </div>
     </>

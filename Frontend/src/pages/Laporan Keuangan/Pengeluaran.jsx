@@ -3,7 +3,13 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashCan, faCalendarDays } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTrashCan,
+  faCalendarDays,
+  faFileExcel,
+  faFilePdf,
+  faChevronDown,
+} from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 
 import Navbar from "../../components/Navbar/Navbar";
@@ -17,6 +23,8 @@ import NoData from "../../components/NoData";
 const Pengeluaran = () => {
   const { checkRoleAndNavigate } = useUser();
   const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(true);
 
   const [allPengeluaran, setAllPengeluaran] = useState([]);
   const [tgl, setTgl] = useState("");
@@ -71,6 +79,7 @@ const Pengeluaran = () => {
 
     const response = await axios.get(url);
     setAllPengeluaran(response.data.data);
+    setLoading(false);
   };
 
   // Add data
@@ -137,6 +146,41 @@ const Pengeluaran = () => {
       Swal.fire({
         title: "Hapus data pengeluaran gagal!",
         text: `Gagal karena ${error.response.data.message}`,
+        icon: "error",
+      }).then(() => {
+        // window.location.reload();
+      });
+    }
+  };
+
+  // PDF
+  const downloadPDF = async () => {
+    let url = "http://localhost:1023/api/v1/pengeluaran/pdf/download";
+    let urlNameFile = "http://localhost:1023/api/v1/pengeluaran/pdf/name";
+
+    if (!withoutFilter) {
+      url += `?start=${startDate}&end=${endDate}`;
+    }
+
+    try {
+      const fileName = await axios.get(urlNameFile);
+
+      const response = await axios.get(url, {
+        responseType: "blob",
+      });
+
+      const urlBlob = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = urlBlob;
+      link.setAttribute("download", fileName.data.data);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.log("There was a problem with your fetch operation:", error);
+      Swal.fire({
+        title: "Gagal export PDF!",
+        // text: `Gagal karena ${error.response.data.message}`,
         icon: "error",
       }).then(() => {
         // window.location.reload();
@@ -220,7 +264,7 @@ const Pengeluaran = () => {
                       </p>
                     </div>
 
-                    <div className="py-1 px-2">
+                    <div className="py-1 pl-1">
                       <button
                         type="button"
                         className="py-3 px-6 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border bg-color-1 text-color-6 shadow-sm hover:bg-6hover disabled:opacity-50 disabled:pointer-events-none "
@@ -228,6 +272,32 @@ const Pengeluaran = () => {
                       >
                         <FontAwesomeIcon icon={faCalendarDays} /> Filter
                       </button>
+                    </div>
+
+                    <div className="py-1 ">
+                      <div className="hs-dropdown relative inline-flex [--placement:bottom-right]">
+                        <button
+                          id="hs-dropdown"
+                          type="button"
+                          className="hs-dropdown-toggle py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-color-1  dark:text-white dark:hover:bg-6hover"
+                        >
+                          Export
+                          <FontAwesomeIcon icon={faChevronDown} />
+                        </button>
+
+                        <div
+                          className="hs-dropdown-menu w-40 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden z-10 bg-white shadow-md rounded-lg p-2 dark:bg-color-1 "
+                          aria-labelledby="hs-dropdown"
+                        >
+                          <button
+                            type="button"
+                            className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-color-6 dark:hover:bg-6hover dark:hover:text-color-6 dark:focus:bg-gray-700"
+                            onClick={downloadPDF}
+                          >
+                            <FontAwesomeIcon icon={faFilePdf} /> PDF
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="py-1">
@@ -246,104 +316,121 @@ const Pengeluaran = () => {
                   <div className="-m-1.5 overflow-x-auto">
                     <div className="p-1.5 min-w-full inline-block align-middle">
                       <div className="border rounded-lg">
-                        {records != 0 ? (
+                        {loading === true ? (
                           <>
-                            <div className="overflow-hidden">
-                              <table className="table-fixed md:table-fixed min-w-full divide-y ">
-                                <thead className=" dark:bg-color-6">
-                                  <tr>
-                                    <th
-                                      scope="col"
-                                      className="px-6 py-3 text-center text-sm font-bold text-color-5 uppercase"
-                                    >
-                                      No
-                                    </th>
-                                    <th
-                                      scope="col"
-                                      className="px-6 py-3 text-start text-sm font-bold text-color-5 uppercase"
-                                    >
-                                      Tanggal
-                                    </th>
-                                    <th
-                                      scope="col"
-                                      className="px-6 py-3 text-center text-sm font-boldtext-color-5 uppercase"
-                                    >
-                                      Barang
-                                    </th>
-                                    <th
-                                      scope="col"
-                                      className="px-6 py-3 text-center text-sm font-boldtext-color-5 uppercase"
-                                    >
-                                      QTY
-                                    </th>
-                                    <th
-                                      scope="col"
-                                      className="px-6 py-3 text-center text-sm font-boldtext-color-5 uppercase"
-                                    >
-                                      Total Pengeluaran
-                                    </th>
-                                    <th
-                                      scope="col"
-                                      className="px-6 py-3 text-center text-sm font-boldtext-color-5 uppercase"
-                                    >
-                                      Action
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody className="divide-y">
-                                  {records.map((item, index) => (
-                                    <tr key={index}>
-                                      <td className="px-6 text-center py-4 whitespace-nowrap text-sm font-medium text-color-5">
-                                        {index +
-                                          1 +
-                                          (currentPage - 1) * recordsPerPage}
-                                        .
-                                      </td>
-                                      <td className="px-6 py-4 whitespace-nowrap text-sm text-color-5">
-                                        {toDate.format(item.tgl)}
-                                      </td>
-                                      <td className="px-6 py-4 whitespace-nowrap text-sm text-color-5 text-center">
-                                        {item.nama}
-                                      </td>
-                                      <td className="px-6 py-4 whitespace-nowrap text-sm text-color-5 text-center">
-                                        {item.qty}
-                                      </td>
-                                      <td className="px-6 py-4 whitespace-nowrap text-sm text-color-5 text-center">
-                                        {toIDR.format(item.pengeluaran)}
-                                      </td>
-
-                                      <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-color-5">
-                                        <div className="text-center ">
-                                          <button
-                                            onClick={() =>
-                                              deletePengeluaran(item.id)
-                                            }
-                                            className="deleteBtn py-3 mx-1 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:pointer-events-none "
-                                          >
-                                            <FontAwesomeIcon
-                                              icon={faTrashCan}
-                                            />
-                                          </button>
-                                        </div>
-                                      </td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
+                            <div className="w-full py-28">
+                              <div className="flex justify-center animate-pulse">
+                                <img
+                                  src="../src/assets/loading.webp"
+                                  style={{ width: "50%" }}
+                                  alt=""
+                                />
+                              </div>
                             </div>
-
-                            <Pagination
-                              currentPage={currentPage}
-                              setCurrentPage={setCurrentPage}
-                              npage={npage}
-                              data={allPengeluaran.length}
-                              show={records.length}
-                              setName={"Pengeluaran"}
-                            />
                           </>
                         ) : (
                           <>
-                            <NoData name={"Pengeluaran"} />
+                            {records != 0 ? (
+                              <>
+                                <div className="overflow-hidden">
+                                  <table className="table-fixed md:table-fixed min-w-full divide-y ">
+                                    <thead className=" dark:bg-color-6">
+                                      <tr>
+                                        <th
+                                          scope="col"
+                                          className="px-6 py-3 text-center text-sm font-bold text-color-5 uppercase"
+                                        >
+                                          No
+                                        </th>
+                                        <th
+                                          scope="col"
+                                          className="px-6 py-3 text-start text-sm font-bold text-color-5 uppercase"
+                                        >
+                                          Tanggal
+                                        </th>
+                                        <th
+                                          scope="col"
+                                          className="px-6 py-3 text-center text-sm font-boldtext-color-5 uppercase"
+                                        >
+                                          Barang
+                                        </th>
+                                        <th
+                                          scope="col"
+                                          className="px-6 py-3 text-center text-sm font-boldtext-color-5 uppercase"
+                                        >
+                                          QTY
+                                        </th>
+                                        <th
+                                          scope="col"
+                                          className="px-6 py-3 text-center text-sm font-boldtext-color-5 uppercase"
+                                        >
+                                          Total Pengeluaran
+                                        </th>
+                                        <th
+                                          scope="col"
+                                          className="px-6 py-3 text-center text-sm font-boldtext-color-5 uppercase"
+                                        >
+                                          Action
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody className="divide-y">
+                                      {records.map((item, index) => (
+                                        <tr key={index}>
+                                          <td className="px-6 text-center py-4 whitespace-nowrap text-sm font-medium text-color-5">
+                                            {index +
+                                              1 +
+                                              (currentPage - 1) *
+                                                recordsPerPage}
+                                            .
+                                          </td>
+                                          <td className="px-6 py-4 whitespace-nowrap text-sm text-color-5">
+                                            {toDate.format(item.tgl)}
+                                          </td>
+                                          <td className="px-6 py-4 whitespace-nowrap text-sm text-color-5 text-center">
+                                            {item.nama}
+                                          </td>
+                                          <td className="px-6 py-4 whitespace-nowrap text-sm text-color-5 text-center">
+                                            {item.qty}
+                                          </td>
+                                          <td className="px-6 py-4 whitespace-nowrap text-sm text-color-5 text-center">
+                                            {toIDR.format(item.pengeluaran)}
+                                          </td>
+
+                                          <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-color-5">
+                                            <div className="text-center ">
+                                              <button
+                                                onClick={() =>
+                                                  deletePengeluaran(item.id)
+                                                }
+                                                className="deleteBtn py-3 mx-1 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:pointer-events-none "
+                                              >
+                                                <FontAwesomeIcon
+                                                  icon={faTrashCan}
+                                                />
+                                              </button>
+                                            </div>
+                                          </td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
+
+                                <Pagination
+                                  currentPage={currentPage}
+                                  setCurrentPage={setCurrentPage}
+                                  npage={npage}
+                                  data={allPengeluaran.length}
+                                  show={records.length}
+                                  setName={"Pengeluaran"}
+                                />
+                              </>
+                            ) : (
+                              <>
+                                <NoData name={"Pengeluaran"} />
+                              </>
+                            )}
                           </>
                         )}
                         {/* Modals Filter date */}
