@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report Pemasukan</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 2px solid #000;
+        padding-bottom: 0.5rem;
+      }
+      .logo {
+        flex: 0 0 auto;
+        margin-right: 20px;
+      }
+      .logo img {
+        max-width: 12rem;
+        height: auto;
+      }
+      .instansi {
+        text-align: left;
+        flex: 1;
+        margin-left: 210px;
+        margin-top: -75px;
+      }
+      .nama-instansi {
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+      .alamat {
+        margin-bottom: 5px;
+        font-style: italic;
+      }
+      .keterangan {
+        font-size: 0.8em;
+      }
+      .status {
+        font-weight: bold;
+      }
+      .status p span {
+        margin-left: 40px;
+        font-weight: normal;
+      }
+      .status p:nth-child(2) {
+        margin-top: -15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="logo">
+        <img src="data:image/png;base64,{{logo}}" alt="Logo Instansi" />
+      </div>
+      <div class="instansi">
+        <div class="nama-instansi">BENGKEL AULIA MOTOR</div>
+        <div class="alamat">
+          Kp. Sawah Desa Jabon Mekar, Kec. Parung Kab. Bogor, Jawa Barat. 16330.
+        </div>
+        <!-- <div class="kontak">Telepon: (123) 456-7890 | Email: info@instansi.com</div> -->
+      </div>
+    </div>
+    <div class="garis"></div>
+
+    <div class="status">
+      <p>Filter <span>&nbsp;&nbsp;&nbsp;&nbsp;: {{start}} - {{end}}</span></p>
+      <p>Perihal <span>: Laporan Data Pemasukan Laporan Keuangan</span></p>
+    </div>
+    <table border="1" cellpadding="5" cellspacing="0" width="100%">
+      <tr style="font-weight: bold">
+        <th>No.</th>
+        <th>Tgl.</th>
+        <th>Nama Barang</th>
+        <th>QTY</th>
+        <th>Pemasukan</th>
+      </tr>
+      {{#each pemasukan}}
+      <tr>
+        <td style="text-align: center">{{this.no}}.</td>
+        <td>{{this.tgl}}</td>
+        <td>{{this.nama}}</td>
+        <td style="text-align: center">{{this.qty}}</td>
+        <td>{{this.pemasukan}}</td>
+      </tr>
+      {{/each}}
+    </table>
+  </body>
+</html>
