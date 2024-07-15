@@ -5,11 +5,12 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
+import ENDPOINTS from "../../utils/constants/constant";
 
 const authService = {
   login: async (email, password) => {
     try {
-      const response = await axios.post("http://localhost:1023/api/v1/login", {
+      const response = await axios.post(ENDPOINTS.LOGIN, {
         email,
         password,
       });

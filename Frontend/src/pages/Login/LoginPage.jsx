@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import Login from "../../components/Login/Login";
+import { Helmet } from "react-helmet-async";
 
 const LoginPage = () => {
   useEffect(() => {
@@ -10,9 +11,15 @@ const LoginPage = () => {
   }, []);
 
   return (
-    <section id="login-page">
-      <Login />
-    </section>
+    <>
+      <Helmet>
+        <title>Login | Aulia Motor</title>
+      </Helmet>
+
+      <section id="login-page">
+        <Login />
+      </section>
+    </>
   );
 };
 

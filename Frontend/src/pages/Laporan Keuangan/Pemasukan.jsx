@@ -19,6 +19,8 @@ import MainTitle from "../../components/MainTitle";
 import { useUser } from "../../context/UserContext";
 import Pagination from "../../components/Pagination/Pagination";
 import NoData from "../../components/NoData";
+import ENDPOINTS from "../../utils/constants/constant";
+import { Helmet } from "react-helmet-async";
 
 const Pemasukan = () => {
   const { checkRoleAndNavigate } = useUser();
@@ -56,6 +58,7 @@ const Pemasukan = () => {
       const today = new Date();
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(today.getDate() - 30);
+      today.setDate(today.getDate() + 1);
       setEndDate(today.toISOString().split("T")[0]);
       setStartDate(thirtyDaysAgo.toISOString().split("T")[0]);
     }
@@ -71,7 +74,7 @@ const Pemasukan = () => {
 
   // Get all data
   const getPemasukan = async () => {
-    let url = "http://localhost:1023/api/v1/pemasukan";
+    let url = `${ENDPOINTS.PEMASUKAN}`;
 
     if (!withoutFilter) {
       url += `?start=${startDate}&end=${endDate}`;
@@ -86,7 +89,7 @@ const Pemasukan = () => {
   const addPemasukan = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:1023/api/v1/pemasukan", {
+      await axios.post(ENDPOINTS.PEMASUKAN, {
         tgl,
         nama,
         qty,
@@ -115,9 +118,7 @@ const Pemasukan = () => {
   // Delete data
   const deletePemasukan = async (id) => {
     try {
-      const response = await axios.get(
-        `http://localhost:1023/api/v1/pemasukan/${id}`
-      );
+      const response = await axios.get(ENDPOINTS.PEMASUKAN_ID(id));
 
       const namaPemasukan = response.data.data[0].nama;
 
@@ -131,7 +132,7 @@ const Pemasukan = () => {
         confirmButtonText: "Ya, Hapus",
       });
       if (result.isConfirmed) {
-        await axios.delete(`http://localhost:1023/api/v1/pemasukan/${id}`);
+        await axios.delete(ENDPOINTS.PEMASUKAN_ID(id));
 
         // Tampilkan pesan keberhasilan
         await Swal.fire({
@@ -155,8 +156,8 @@ const Pemasukan = () => {
 
   // PDF
   const downloadPDF = async () => {
-    let url = "http://localhost:1023/api/v1/pemasukan/pdf/download";
-    let urlNameFile = "http://localhost:1023/api/v1/pemasukan/pdf/name";
+    let url = `${ENDPOINTS.PEMASUKAN_PDF_DOWNLOAD}`;
+    let urlNameFile = `${ENDPOINTS.PEMASUKAN_PDF_NAME}`;
 
     if (!withoutFilter) {
       url += `?start=${startDate}&end=${endDate}`;
@@ -221,6 +222,10 @@ const Pemasukan = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Laporan Keuangan - Pemasukan | Aulia Motor</title>
+      </Helmet>
+
       <Navbar active2="active" display2="block" />
       <div className="w-full pt-10 px-4 sm:px-6 md:px-8 lg:ps-72">
         <MainTitle size="text-3xl" main="Laporan Keuangan" />

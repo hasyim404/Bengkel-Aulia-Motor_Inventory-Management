@@ -19,6 +19,8 @@ import { useUser } from "../../context/UserContext";
 
 import Pagination from "../../components/Pagination/Pagination";
 import NoData from "../../components/NoData";
+import ENDPOINTS from "../../utils/constants/constant";
+import { Helmet } from "react-helmet-async";
 
 const Pengeluaran = () => {
   const { checkRoleAndNavigate } = useUser();
@@ -56,6 +58,7 @@ const Pengeluaran = () => {
       const today = new Date();
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(today.getDate() - 30);
+      today.setDate(today.getDate() + 1);
       setEndDate(today.toISOString().split("T")[0]);
       setStartDate(thirtyDaysAgo.toISOString().split("T")[0]);
     }
@@ -71,7 +74,7 @@ const Pengeluaran = () => {
 
   // Get all data
   const getPengeluaran = async () => {
-    let url = "http://localhost:1023/api/v1/pengeluaran";
+    let url = `${ENDPOINTS.PENGELUARAN}`;
 
     if (!withoutFilter) {
       url += `?start=${startDate}&end=${endDate}`;
@@ -86,7 +89,7 @@ const Pengeluaran = () => {
   const addPengeluaran = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:1023/api/v1/pengeluaran", {
+      await axios.post(ENDPOINTS.PENGELUARAN, {
         tgl,
         nama,
         qty,
@@ -115,9 +118,7 @@ const Pengeluaran = () => {
   // Delete data
   const deletePengeluaran = async (id) => {
     try {
-      const response = await axios.get(
-        `http://localhost:1023/api/v1/pengeluaran/${id}`
-      );
+      const response = await axios.get(ENDPOINTS.PENGELUARAN_ID(id));
 
       const namaPengeluaran = response.data.data[0].nama;
 
@@ -131,7 +132,7 @@ const Pengeluaran = () => {
         confirmButtonText: "Ya, Hapus",
       });
       if (result.isConfirmed) {
-        await axios.delete(`http://localhost:1023/api/v1/pengeluaran/${id}`);
+        await axios.delete(ENDPOINTS.PENGELUARAN_ID(id));
 
         // Tampilkan pesan keberhasilan
         await Swal.fire({
@@ -155,8 +156,8 @@ const Pengeluaran = () => {
 
   // PDF
   const downloadPDF = async () => {
-    let url = "http://localhost:1023/api/v1/pengeluaran/pdf/download";
-    let urlNameFile = "http://localhost:1023/api/v1/pengeluaran/pdf/name";
+    let url = `${ENDPOINTS.PENGELUARAN_PDF_DOWNLOAD}`;
+    let urlNameFile = `${ENDPOINTS.PENGELUARAN_PDF_NAME}`;
 
     if (!withoutFilter) {
       url += `?start=${startDate}&end=${endDate}`;
@@ -221,6 +222,10 @@ const Pengeluaran = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Laporan Keuangan - Pengeluaran | Aulia Motor</title>
+      </Helmet>
+
       <Navbar active2="active" display2="block" />
       <div className="w-full pt-10 px-4 sm:px-6 md:px-8 lg:ps-72">
         <MainTitle size="text-3xl" main="Laporan Keuangan" />

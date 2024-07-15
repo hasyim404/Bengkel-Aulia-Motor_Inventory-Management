@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
 import Navbar from "../components/Navbar/Navbar";
+import { Helmet } from "react-helmet-async";
 
 const Blank = () => {
   const navigate = useNavigate();
@@ -11,6 +12,10 @@ const Blank = () => {
   };
   return (
     <>
+      <Helmet>
+        <title>404 | Aulia Motor</title>
+      </Helmet>
+
       <Navbar />
       <div className="flex flex-col mx-auto size-full">
         <div className="text-center py-52 px-4 sm:px-6 lg:px-8">

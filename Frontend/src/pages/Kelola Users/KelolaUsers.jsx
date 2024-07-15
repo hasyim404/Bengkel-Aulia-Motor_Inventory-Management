@@ -18,6 +18,8 @@ import { useUser } from "../../context/UserContext";
 import Pagination from "../../components/Pagination/Pagination";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import NoData from "../../components/NoData";
+import ENDPOINTS from "../../utils/constants/constant";
+import { Helmet } from "react-helmet-async";
 
 const KelolaUsers = () => {
   const { checkRoleAndNavigate } = useUser();
@@ -77,7 +79,7 @@ const KelolaUsers = () => {
     formData.append("phone_number", currentItem.phone_number);
 
     try {
-      const url = `http://localhost:1023/api/v1/users/${currentItem.id}`;
+      const url = `${ENDPOINTS.USERS_ID(currentItem.id)}`;
       await axios.put(url, formData);
       Swal.fire({
         title: "Edit Data user Berhasil!",
@@ -129,15 +131,13 @@ const KelolaUsers = () => {
   }, [navigate, query]);
 
   const cariUser = async () => {
-    const response = await axios.get(
-      `http://localhost:1023/api/v1/users?q=${query}`
-    );
+    const response = await axios.get(`${ENDPOINTS.USERS}?q=${query}`);
     setUser(response.data.qq);
   };
 
   // Get Data Users
   const getUsers = async () => {
-    const response = await axios.get("http://localhost:1023/api/v1/users");
+    const response = await axios.get(ENDPOINTS.USERS);
     setUser(response.data.data);
     setLoading(false);
   };
@@ -146,7 +146,7 @@ const KelolaUsers = () => {
   const addUsers = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:1023/api/v1/register", {
+      await axios.post(ENDPOINTS.REGISTER, {
         // console.log({
         f_name,
         l_name,
@@ -180,9 +180,7 @@ const KelolaUsers = () => {
   // Delete User
   const deleteUser = async (id) => {
     try {
-      const response = await axios.get(
-        `http://localhost:1023/api/v1/users/${id}`
-      );
+      const response = await axios.get(ENDPOINTS.USERS_ID(id));
 
       const findUser = response.data.data[0];
 
@@ -196,7 +194,7 @@ const KelolaUsers = () => {
         confirmButtonText: "Ya, Hapus",
       });
       if (result.isConfirmed) {
-        await axios.delete(`http://localhost:1023/api/v1/users/${id}`);
+        await axios.delete(ENDPOINTS.USERS_ID(id));
 
         // Tampilkan pesan keberhasilan
         await Swal.fire({
@@ -242,6 +240,10 @@ const KelolaUsers = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Kelola Users | Aulia Motor</title>
+      </Helmet>
+
       <Navbar active4="active" />
       <div className="w-full pt-10 px-4 sm:px-6 md:px-8 lg:ps-72">
         <MainTitle size="text-3xl" main="Kelola Users" />

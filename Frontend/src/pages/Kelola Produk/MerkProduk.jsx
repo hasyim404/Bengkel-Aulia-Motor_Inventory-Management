@@ -17,6 +17,8 @@ import { useUser } from "../../context/UserContext";
 import Pagination from "../../components/Pagination/Pagination";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import NoData from "../../components/NoData";
+import ENDPOINTS from "../../utils/constants/constant";
+import { Helmet } from "react-helmet-async";
 
 const MerkProduk = () => {
   const { checkRoleAndNavigate } = useUser();
@@ -62,7 +64,7 @@ const MerkProduk = () => {
     formData.append("catatan", currentItem.catatan);
 
     try {
-      const url = `http://localhost:1023/api/v1/merk/${currentItem.id}`;
+      const url = `${ENDPOINTS.MERK_ID(currentItem.id)}`;
       await axios.put(url, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -125,15 +127,13 @@ const MerkProduk = () => {
   };
 
   const cariMerk = async () => {
-    const response = await axios.get(
-      `http://localhost:1023/api/v1/merk?q=${query}`
-    );
+    const response = await axios.get(`${ENDPOINTS.MERK}?q=${query}`);
     setMerk(response.data.qq);
   };
 
   // Get data
   const getMerk = async () => {
-    const response = await axios.get("http://localhost:1023/api/v1/merk");
+    const response = await axios.get(ENDPOINTS.MERK);
     setMerk(response.data.data);
     setLoading(false);
   };
@@ -147,7 +147,7 @@ const MerkProduk = () => {
     formData.append("catatan", catatan);
 
     try {
-      await axios.post("http://localhost:1023/api/v1/merk", formData, {
+      await axios.post(ENDPOINTS.MERK, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -175,9 +175,7 @@ const MerkProduk = () => {
   // Delete data
   const deleteMerk = async (id) => {
     try {
-      const response = await axios.get(
-        `http://localhost:1023/api/v1/merk/${id}`
-      );
+      const response = await axios.get(ENDPOINTS.MERK_ID(id));
 
       const namaMerk = response.data.data[0].n_merk;
 
@@ -191,7 +189,7 @@ const MerkProduk = () => {
         confirmButtonText: "Ya, Hapus",
       });
       if (result.isConfirmed) {
-        await axios.delete(`http://localhost:1023/api/v1/merk/${id}`);
+        await axios.delete(ENDPOINTS.MERK_ID(id));
 
         // Tampilkan pesan keberhasilan
         await Swal.fire({
@@ -214,6 +212,10 @@ const MerkProduk = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Kelola Produk - Merk | Aulia Motor</title>
+      </Helmet>
+
       <Navbar active="active" display="block" />
       <div className="w-full pt-10 px-4 sm:px-6 md:px-8 lg:ps-72">
         <MainTitle size="text-3xl" main="Kelola Produk" />

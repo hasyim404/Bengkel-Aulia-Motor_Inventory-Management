@@ -16,6 +16,9 @@ import Subnav from "../../components/Subnav";
 import MainTitle from "../../components/MainTitle";
 import Pagination from "../../components/Pagination/Pagination";
 import NoData from "../../components/NoData";
+import ENDPOINTS from "../../utils/constants/constant";
+
+import { Helmet } from "react-helmet-async";
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -25,14 +28,14 @@ const Dashboard = () => {
   const [pemasukan, setPemasukan] = useState([]);
 
   const getBarang = async () => {
-    const response = await axios.get("http://localhost:1023/api/v1/barang");
+    const response = await axios.get(ENDPOINTS.BARANG);
     setBarang(response.data.data);
     setTerendah(response.data.terendah);
     setLoading(false);
   };
 
   const getPemasukan = async () => {
-    const response = await axios.get("http://localhost:1023/api/v1/pemasukan");
+    const response = await axios.get(ENDPOINTS.PEMASUKAN);
     setPemasukan(response.data.data);
     setLoading(false);
   };
@@ -89,6 +92,10 @@ const Dashboard = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Dashboard | Aulia Motor</title>
+      </Helmet>
+
       <Navbar active3="active" />
       <div className="w-full pt-10 px-4 sm:px-6 md:px-8 lg:ps-72">
         <MainTitle size="text-3xl" main="Dashboard" />

@@ -25,9 +25,11 @@
     "react-chartjs-2": "^5.2.0",
     "react-csv": "^2.2.2",
     "react-dom": "^18.2.0",
+    "react-helmet-async": "^2.0.5",
     "react-medium-image-zoom": "^5.2.4",
     "react-modal-image": "^2.6.0",
     "react-router-dom": "^6.21.0",
+    "react-select": "^5.8.0",
     "sweetalert2": "^11.10.1"
   },
   "devDependencies": {

@@ -14,6 +14,8 @@ import { useUser } from "../../context/UserContext";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import Pagination from "../../components/Pagination/Pagination";
 import NoData from "../../components/NoData";
+import ENDPOINTS from "../../utils/constants/constant";
+import { Helmet } from "react-helmet-async";
 
 const Kategori = () => {
   const { checkRoleAndNavigate } = useUser();
@@ -56,7 +58,7 @@ const Kategori = () => {
     formData.append("catatan", currentItem.catatan);
 
     try {
-      const url = `http://localhost:1023/api/v1/kategori/${currentItem.id}`;
+      const url = `${ENDPOINTS.KATEGORI_ID(currentItem.id)}`;
       await axios.put(url, formData);
       Swal.fire({
         title: "Edit Data kategori Berhasil!",
@@ -107,15 +109,13 @@ const Kategori = () => {
   }, [navigate, query]);
 
   const cariKategori = async () => {
-    const response = await axios.get(
-      `http://localhost:1023/api/v1/kategori?q=${query}`
-    );
+    const response = await axios.get(`${ENDPOINTS.KATEGORI}?q=${query}`);
     setKategori(response.data.qq);
   };
 
   // Get all data
   const getKategori = async () => {
-    const response = await axios.get("http://localhost:1023/api/v1/kategori");
+    const response = await axios.get(ENDPOINTS.KATEGORI);
     setKategori(response.data.data);
     setLoading(false);
   };
@@ -124,7 +124,7 @@ const Kategori = () => {
   const addKategori = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:1023/api/v1/kategori", {
+      await axios.post(ENDPOINTS.KATEGORI, {
         n_kategori,
         catatan,
       });
@@ -151,9 +151,7 @@ const Kategori = () => {
   // Delete
   const deleteKategori = async (id) => {
     try {
-      const response = await axios.get(
-        `http://localhost:1023/api/v1/kategori/${id}`
-      );
+      const response = await axios.get(ENDPOINTS.KATEGORI_ID(id));
 
       const namaKategori = response.data.data[0].n_kategori;
 
@@ -167,7 +165,7 @@ const Kategori = () => {
         confirmButtonText: "Ya, Hapus",
       });
       if (result.isConfirmed) {
-        await axios.delete(`http://localhost:1023/api/v1/kategori/${id}`);
+        await axios.delete(ENDPOINTS.KATEGORI_ID(id));
 
         // Tampilkan pesan keberhasilan
         await Swal.fire({
@@ -191,6 +189,10 @@ const Kategori = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Kelola Produk - Kategori | Aulia Motor</title>
+      </Helmet>
+
       <Navbar active="active" display="block" />
       <div className="w-full pt-10 px-4 sm:px-6 md:px-8 lg:ps-72">
         <MainTitle size="text-3xl" main="Kelola Produk" />

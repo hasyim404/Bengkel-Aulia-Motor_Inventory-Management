@@ -22,14 +22,23 @@ import Pagination from "../../components/Pagination/Pagination";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import NoData from "../../components/NoData";
 
+import Select from "react-select";
+import ENDPOINTS from "../../utils/constants/constant";
+import { Helmet } from "react-helmet-async";
+
 const KelolaBarang = () => {
   const { checkRoleAndNavigate, getUserData } = useUser();
   const navigate = useNavigate();
   const data = getUserData();
   const [loading, setLoading] = useState(true);
+  const initialItem = {
+    id_merk: "",
+    id_kategori: "",
+    id_ukuran: "",
+  };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentItem, setCurrentItem] = useState();
+  const [currentItem, setCurrentItem] = useState(initialItem);
 
   const [barang, setBarang] = useState([]);
 
@@ -89,7 +98,7 @@ const KelolaBarang = () => {
 
     // Perform the update API request
     try {
-      const url = `http://localhost:1023/api/v1/barang/${currentItem.id_barang}`;
+      const url = `${ENDPOINTS.BARANG_ID(currentItem.id_barang)}`;
       await axios.put(url, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -189,32 +198,30 @@ const KelolaBarang = () => {
   };
 
   const cariBarang = async () => {
-    const response = await axios.get(
-      `http://localhost:1023/api/v1/barang?q=${query}`
-    );
+    const response = await axios.get(`${ENDPOINTS.BARANG}?q=${query}`);
     setBarang(response.data.qq);
   };
 
   // Get Data
   // Get data barang
   const getBarang = async () => {
-    const response = await axios.get("http://localhost:1023/api/v1/barang");
+    const response = await axios.get(ENDPOINTS.BARANG);
     setBarang(response.data.data);
     setLoading(false);
   };
   // Get data merk
   const getMerk = async () => {
-    const response = await axios.get("http://localhost:1023/api/v1/merk");
+    const response = await axios.get(ENDPOINTS.MERK);
     setMerkIdOptions(response.data.data);
   };
   // Get data kategori
   const getKategori = async () => {
-    const response = await axios.get("http://localhost:1023/api/v1/kategori");
+    const response = await axios.get(ENDPOINTS.KATEGORI);
     setKategoriIdOptions(response.data.data);
   };
   // Get data ukuran
   const getUkuran = async () => {
-    const response = await axios.get("http://localhost:1023/api/v1/ukuran");
+    const response = await axios.get(ENDPOINTS.UKURAN);
     setUkuranIdOptions(response.data.data);
   };
 
@@ -227,13 +234,13 @@ const KelolaBarang = () => {
     formData.append("tipe_stok", tipe_stok);
     formData.append("h_beli", h_beli);
     formData.append("h_jual", h_jual);
-    formData.append("merk_id", merk_id);
+    formData.append("merk_id", currentItem.id_merk);
     formData.append("img", img);
-    formData.append("kategori_id", kategori_id);
-    formData.append("ukuran_id", ukuran_id);
+    formData.append("kategori_id", currentItem.id_kategori);
+    formData.append("ukuran_id", currentItem.id_ukuran);
     formData.append("users_id", users_id);
     try {
-      await axios.post("http://localhost:1023/api/v1/barang", formData, {
+      await axios.post(ENDPOINTS.BARANG, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -247,7 +254,7 @@ const KelolaBarang = () => {
         window.location.reload();
       });
     } catch (error) {
-      // console.log(error);
+      console.log(error);
       Swal.fire({
         title: "Gagal tambah data!",
         text: `Gagal karena ${error.response.data.message}`,
@@ -260,9 +267,7 @@ const KelolaBarang = () => {
   const deleteBarang = async (id, e) => {
     try {
       // console.log(id);
-      const response = await axios.get(
-        `http://localhost:1023/api/v1/barang/${id}`
-      );
+      const response = await axios.get(ENDPOINTS.BARANG_ID(id));
 
       const namaBarang = response.data.data[0].n_barang;
 
@@ -276,7 +281,7 @@ const KelolaBarang = () => {
         confirmButtonText: "Ya, Hapus",
       });
       if (result.isConfirmed) {
-        await axios.delete(`http://localhost:1023/api/v1/barang/${id}`);
+        await axios.delete(ENDPOINTS.BARANG_ID(id));
 
         // Tampilkan pesan keberhasilan
         await Swal.fire({
@@ -326,8 +331,8 @@ const KelolaBarang = () => {
 
   // PDF
   const downloadPDF = async () => {
-    let url = "http://localhost:1023/api/v1/barang/pdf/download";
-    let urlNameFile = "http://localhost:1023/api/v1/barang/pdf/name";
+    let url = `${ENDPOINTS.BARANG_PDF_DOWNLOAD}`;
+    let urlNameFile = `${ENDPOINTS.BARANG_PDF_NAME}`;
 
     try {
       const fileName = await axios.get(urlNameFile);
@@ -362,8 +367,34 @@ const KelolaBarang = () => {
     maximumFractionDigits: 0,
   });
 
+  const merkOptions = merkIdOptions.map((data) => ({
+    value: data.id,
+    label: data.n_merk,
+  }));
+
+  const kategoriOptions = kategoriIdOptions.map((data) => ({
+    value: data.id,
+    label: data.n_kategori,
+  }));
+
+  const ukuranOptions = ukuranIdOptions.map((data) => ({
+    value: data.id,
+    label: data.n_ukuran,
+  }));
+
+  const handleChangeSelect = (name, selectedOption) => {
+    setCurrentItem((prevItem) => ({
+      ...prevItem,
+      [name]: selectedOption ? selectedOption.value : "", // Pastikan nilai diatur dengan benar
+    }));
+  };
+
   return (
     <>
+      <Helmet>
+        <title>Kelola Barang | Aulia Motor</title>
+      </Helmet>
+
       <Navbar active1="active" />
       <div className="w-full pt-10 px-4 sm:px-6 md:px-8 lg:ps-72">
         <MainTitle size="text-3xl" main="Kelola Barang" />
@@ -757,36 +788,47 @@ const KelolaBarang = () => {
                                                         </span>
                                                       </label>
                                                       <div className="relative">
-                                                        <select
-                                                          id="hs-select-label"
-                                                          name="merk_id"
+                                                        <Select
                                                           value={
-                                                            currentItem.id_merk
+                                                            merkOptions.find(
+                                                              (option) =>
+                                                                option.value ===
+                                                                currentItem?.id_merk
+                                                            ) || null
                                                           }
-                                                          onChange={
-                                                            handleChange
+                                                          onChange={(
+                                                            selectedOption
+                                                          ) =>
+                                                            handleChangeSelect(
+                                                              "id_merk",
+                                                              selectedOption
+                                                            )
                                                           }
-                                                          className="py-3 px-4 pe-9 block w-full  border-color-3 shadow-sm rounded-lg text-sm focus:z-10 focus:border-color-2  disabled:opacity-50 disabled:pointer-events-none dark:bg-color-6 dark:text-gray-400 dark:focus:ring-color-2"
-                                                        >
-                                                          <option value="">
-                                                            Pilih merk
-                                                          </option>
-
-                                                          {merkIdOptions.map(
-                                                            (data) => {
-                                                              return (
-                                                                <option
-                                                                  key={data.id}
-                                                                  value={
-                                                                    data.id
-                                                                  }
-                                                                >
-                                                                  {data.n_merk}
-                                                                </option>
-                                                              );
-                                                            }
-                                                          )}
-                                                        </select>
+                                                          options={merkOptions}
+                                                          className="block w-full  border-color-3 shadow-sm rounded-lg text-sm focus:z-10 focus:border-color-2  disabled:opacity-50 disabled:pointer-events-none dark:bg-color-6 dark:text-gray-400 dark:focus:ring-color-2"
+                                                          styles={{
+                                                            control: (
+                                                              base
+                                                            ) => ({
+                                                              ...base,
+                                                              padding: "4px 0",
+                                                              borderColor: "",
+                                                              boxShadow:
+                                                                "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                                                              borderRadius:
+                                                                "0.375rem",
+                                                              backgroundColor:
+                                                                "white",
+                                                            }),
+                                                            menu: (base) => ({
+                                                              ...base,
+                                                              maxHeight:
+                                                                "200px",
+                                                              overflowY: "auto",
+                                                            }),
+                                                          }}
+                                                          placeholder="Pilih Merk"
+                                                        />
                                                       </div>
                                                     </div>
                                                     <div className="col-span-5">
@@ -838,34 +880,49 @@ const KelolaBarang = () => {
                                                         </span>
                                                       </label>
                                                       <div className="relative">
-                                                        <select
-                                                          id="hs-select-label"
-                                                          name="kategori_id"
+                                                        <Select
                                                           value={
-                                                            currentItem.id_kategori
+                                                            kategoriOptions.find(
+                                                              (option) =>
+                                                                option.value ===
+                                                                currentItem?.id_kategori
+                                                            ) || null
                                                           }
-                                                          onChange={
-                                                            handleChange
-                                                          }
-                                                          className="py-3 px-4 pe-9 block w-full rounded-lg border-color-3 shadow-sm text-sm focus:z-10 focus:border-color-2  disabled:opacity-50 disabled:pointer-events-none dark:bg-color-6 dark:text-gray-400 dark:focus:ring-color-2"
-                                                        >
-                                                          <option value="">
-                                                            Pilih Kategori
-                                                          </option>
-                                                          {kategoriIdOptions.map(
-                                                            (data) => (
-                                                              <option
-                                                                key={data.id}
-                                                                value={data.id}
-                                                              >
-                                                                {
-                                                                  data.n_kategori
-                                                                }
-                                                              </option>
+                                                          onChange={(
+                                                            selectedOption
+                                                          ) =>
+                                                            handleChangeSelect(
+                                                              "id_kategori",
+                                                              selectedOption
                                                             )
-                                                            // console.log(data.n_merk)
-                                                          )}
-                                                        </select>
+                                                          }
+                                                          options={
+                                                            kategoriOptions
+                                                          }
+                                                          className="block w-full  border-color-3 shadow-sm rounded-lg text-sm focus:z-10 focus:border-color-2  disabled:opacity-50 disabled:pointer-events-none dark:bg-color-6 dark:text-gray-400 dark:focus:ring-color-2"
+                                                          styles={{
+                                                            control: (
+                                                              base
+                                                            ) => ({
+                                                              ...base,
+                                                              padding: "4px 0",
+                                                              borderColor: "",
+                                                              boxShadow:
+                                                                "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                                                              borderRadius:
+                                                                "0.375rem",
+                                                              backgroundColor:
+                                                                "white",
+                                                            }),
+                                                            menu: (base) => ({
+                                                              ...base,
+                                                              maxHeight:
+                                                                "200px",
+                                                              overflowY: "auto",
+                                                            }),
+                                                          }}
+                                                          placeholder="Pilih Kategori"
+                                                        />
                                                       </div>
                                                     </div>
                                                     <div className="col-span-5">
@@ -902,31 +959,49 @@ const KelolaBarang = () => {
                                                         Ukuran
                                                       </label>
                                                       <div className="relative">
-                                                        <select
-                                                          id="hs-select-label"
-                                                          name="ukuran_ukuran"
+                                                        <Select
                                                           value={
-                                                            currentItem.id_ukuran
+                                                            ukuranOptions.find(
+                                                              (option) =>
+                                                                option.value ===
+                                                                currentItem?.id_ukuran
+                                                            ) || null
                                                           }
-                                                          onChange={
-                                                            handleChange
-                                                          }
-                                                          className="py-3 px-4 pe-9 block w-full rounded-lg border-color-3 shadow-sm text-sm focus:z-10 focus:border-color-2  disabled:opacity-50 disabled:pointer-events-none dark:bg-color-6 dark:text-gray-400 dark:focus:ring-color-2"
-                                                        >
-                                                          <option value="">
-                                                            Pilih Ukuran
-                                                          </option>
-                                                          {ukuranIdOptions.map(
-                                                            (data) => (
-                                                              <option
-                                                                key={data.id}
-                                                                value={data.id}
-                                                              >
-                                                                {data.n_ukuran}
-                                                              </option>
+                                                          onChange={(
+                                                            selectedOption
+                                                          ) =>
+                                                            handleChangeSelect(
+                                                              "id_ukuran",
+                                                              selectedOption
                                                             )
-                                                          )}
-                                                        </select>
+                                                          }
+                                                          options={
+                                                            ukuranOptions
+                                                          }
+                                                          className="block w-full  border-color-3 shadow-sm rounded-lg text-sm focus:z-10 focus:border-color-2  disabled:opacity-50 disabled:pointer-events-none dark:bg-color-6 dark:text-gray-400 dark:focus:ring-color-2"
+                                                          styles={{
+                                                            control: (
+                                                              base
+                                                            ) => ({
+                                                              ...base,
+                                                              padding: "4px 0",
+                                                              borderColor: "",
+                                                              boxShadow:
+                                                                "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                                                              borderRadius:
+                                                                "0.375rem",
+                                                              backgroundColor:
+                                                                "white",
+                                                            }),
+                                                            menu: (base) => ({
+                                                              ...base,
+                                                              maxHeight:
+                                                                "200px",
+                                                              overflowY: "auto",
+                                                            }),
+                                                          }}
+                                                          placeholder="Pilih Ukuran"
+                                                        />
                                                       </div>
                                                     </div>
                                                   </div>
@@ -1163,27 +1238,40 @@ const KelolaBarang = () => {
                                             </span>
                                           </label>
                                           <div className="relative">
-                                            <select
-                                              id="hs-select-label"
-                                              value={merk_id}
-                                              onChange={(e) =>
-                                                setMerkId(e.target.value)
+                                            <Select
+                                              value={
+                                                merkOptions.find(
+                                                  (option) =>
+                                                    option.value ===
+                                                    currentItem?.id_merk
+                                                ) || null
                                               }
-                                              className="py-3 px-4 pe-9 block w-full  border-color-3 shadow-sm rounded-lg text-sm focus:z-10 focus:border-color-2  disabled:opacity-50 disabled:pointer-events-none dark:bg-color-6 dark:text-gray-400 dark:focus:ring-color-2"
-                                            >
-                                              <option value="">
-                                                Pilih merk
-                                              </option>
-
-                                              {merkIdOptions.map((data) => (
-                                                <option
-                                                  key={data.id}
-                                                  value={data.id}
-                                                >
-                                                  {data.n_merk}
-                                                </option>
-                                              ))}
-                                            </select>
+                                              onChange={(selectedOption) =>
+                                                handleChangeSelect(
+                                                  "id_merk",
+                                                  selectedOption
+                                                )
+                                              }
+                                              options={merkOptions}
+                                              className="block w-full  border-color-3 shadow-sm rounded-lg text-sm focus:z-10 focus:border-color-2  disabled:opacity-50 disabled:pointer-events-none dark:bg-color-6 dark:text-gray-400 dark:focus:ring-color-2"
+                                              styles={{
+                                                control: (base) => ({
+                                                  ...base,
+                                                  padding: "4px 0",
+                                                  borderColor: "",
+                                                  boxShadow:
+                                                    "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                                                  borderRadius: "0.375rem",
+                                                  backgroundColor: "white",
+                                                }),
+                                                menu: (base) => ({
+                                                  ...base,
+                                                  maxHeight: "200px",
+                                                  overflowY: "auto",
+                                                }),
+                                              }}
+                                              placeholder="Pilih merk"
+                                            />
                                           </div>
                                         </div>
                                         <div className="col-span-5">
@@ -1229,29 +1317,40 @@ const KelolaBarang = () => {
                                             </span>
                                           </label>
                                           <div className="relative">
-                                            <select
-                                              id="hs-select-label"
-                                              value={kategori_id}
-                                              onChange={(e) =>
-                                                setKategoriId(e.target.value)
+                                            <Select
+                                              value={
+                                                kategoriOptions.find(
+                                                  (option) =>
+                                                    option.value ===
+                                                    currentItem?.id_kategori
+                                                ) || null
                                               }
-                                              className="py-3 px-4 pe-9 block w-full rounded-lg border-color-3 shadow-sm text-sm focus:z-10 focus:border-color-2  disabled:opacity-50 disabled:pointer-events-none dark:bg-color-6 dark:text-gray-400 dark:focus:ring-color-2"
-                                            >
-                                              <option value="">
-                                                Pilih Kategori
-                                              </option>
-                                              {kategoriIdOptions.map(
-                                                (data) => (
-                                                  <option
-                                                    key={data.id}
-                                                    value={data.id}
-                                                  >
-                                                    {data.n_kategori}
-                                                  </option>
+                                              onChange={(selectedOption) =>
+                                                handleChangeSelect(
+                                                  "id_kategori",
+                                                  selectedOption
                                                 )
-                                                // console.log(data.n_merk)
-                                              )}
-                                            </select>
+                                              }
+                                              options={kategoriOptions}
+                                              className="block w-full  border-color-3 shadow-sm rounded-lg text-sm focus:z-10 focus:border-color-2  disabled:opacity-50 disabled:pointer-events-none dark:bg-color-6 dark:text-gray-400 dark:focus:ring-color-2"
+                                              styles={{
+                                                control: (base) => ({
+                                                  ...base,
+                                                  padding: "4px 0",
+                                                  borderColor: "",
+                                                  boxShadow:
+                                                    "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                                                  borderRadius: "0.375rem",
+                                                  backgroundColor: "white",
+                                                }),
+                                                menu: (base) => ({
+                                                  ...base,
+                                                  maxHeight: "200px",
+                                                  overflowY: "auto",
+                                                }),
+                                              }}
+                                              placeholder="Pilih Kategori"
+                                            />
                                           </div>
                                         </div>
                                       </div>
@@ -1264,26 +1363,40 @@ const KelolaBarang = () => {
                                             Ukuran
                                           </label>
                                           <div className="relative">
-                                            <select
-                                              id="hs-select-label"
-                                              value={ukuran_id}
-                                              onChange={(e) =>
-                                                setUkuranId(e.target.value)
+                                            <Select
+                                              value={
+                                                ukuranOptions.find(
+                                                  (option) =>
+                                                    option.value ===
+                                                    currentItem?.id_ukuran
+                                                ) || null
                                               }
-                                              className="py-3 px-4 pe-9 block w-full rounded-lg border-color-3 shadow-sm text-sm focus:z-10 focus:border-color-2  disabled:opacity-50 disabled:pointer-events-none dark:bg-color-6 dark:text-gray-400 dark:focus:ring-color-2"
-                                            >
-                                              <option value="">
-                                                Pilih Ukuran
-                                              </option>
-                                              {ukuranIdOptions.map((data) => (
-                                                <option
-                                                  key={data.id}
-                                                  value={data.id}
-                                                >
-                                                  {data.n_ukuran}
-                                                </option>
-                                              ))}
-                                            </select>
+                                              onChange={(selectedOption) =>
+                                                handleChangeSelect(
+                                                  "id_ukuran",
+                                                  selectedOption
+                                                )
+                                              }
+                                              options={ukuranOptions}
+                                              className="block w-full  border-color-3 shadow-sm rounded-lg text-sm focus:z-10 focus:border-color-2  disabled:opacity-50 disabled:pointer-events-none dark:bg-color-6 dark:text-gray-400 dark:focus:ring-color-2"
+                                              styles={{
+                                                control: (base) => ({
+                                                  ...base,
+                                                  padding: "4px 0",
+                                                  borderColor: "",
+                                                  boxShadow:
+                                                    "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                                                  borderRadius: "0.375rem",
+                                                  backgroundColor: "white",
+                                                }),
+                                                menu: (base) => ({
+                                                  ...base,
+                                                  maxHeight: "200px",
+                                                  overflowY: "auto",
+                                                }),
+                                              }}
+                                              placeholder="Pilih Ukuran"
+                                            />
                                           </div>
                                         </div>
                                       </div>

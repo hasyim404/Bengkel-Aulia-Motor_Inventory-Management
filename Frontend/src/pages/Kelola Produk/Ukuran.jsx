@@ -13,6 +13,8 @@ import Subnav from "../../components/Subnav";
 import { useUser } from "../../context/UserContext";
 import Pagination from "../../components/Pagination/Pagination";
 import NoData from "../../components/NoData";
+import ENDPOINTS from "../../utils/constants/constant";
+import { Helmet } from "react-helmet-async";
 
 const Ukuran = () => {
   const { checkRoleAndNavigate } = useUser();
@@ -54,7 +56,7 @@ const Ukuran = () => {
     formData.append("catatan", currentItem.catatan);
 
     try {
-      const url = `http://localhost:1023/api/v1/ukuran/${currentItem.id}`;
+      const url = `${ENDPOINTS.UKURAN_ID(currentItem.id)}`;
       await axios.put(url, formData);
       Swal.fire({
         title: "Edit Data ukuran Berhasil!",
@@ -105,7 +107,7 @@ const Ukuran = () => {
 
   // Get all data
   const getUkuran = async () => {
-    const response = await axios.get("http://localhost:1023/api/v1/ukuran");
+    const response = await axios.get(ENDPOINTS.UKURAN);
     setUkuran(response.data.data);
     setLoading(false);
   };
@@ -114,7 +116,7 @@ const Ukuran = () => {
   const addUkuran = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:1023/api/v1/ukuran", {
+      await axios.post(ENDPOINTS.UKURAN, {
         n_ukuran,
         catatan,
       });
@@ -141,9 +143,7 @@ const Ukuran = () => {
   // Delete data
   const deleteUkuran = async (id) => {
     try {
-      const response = await axios.get(
-        `http://localhost:1023/api/v1/ukuran/${id}`
-      );
+      const response = await axios.get(ENDPOINTS.UKURAN_ID(id));
 
       const namaUkuran = response.data.data[0].n_ukuran;
 
@@ -157,7 +157,7 @@ const Ukuran = () => {
         confirmButtonText: "Ya, Hapus",
       });
       if (result.isConfirmed) {
-        await axios.delete(`http://localhost:1023/api/v1/ukuran/${id}`);
+        await axios.delete(ENDPOINTS.UKURAN_ID(id));
 
         // Tampilkan pesan keberhasilan
         await Swal.fire({
@@ -181,6 +181,10 @@ const Ukuran = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Kelola Produk - Ukuran | Aulia Motor</title>
+      </Helmet>
+
       <Navbar active="active" display="block" />
       <div className="w-full pt-10 px-4 sm:px-6 md:px-8 lg:ps-72">
         <MainTitle size="text-3xl" main="Kelola Produk" />
