@@ -7,7 +7,7 @@ const SearchBar = ({ setQuery, setName }) => {
         <label className="sr-only">Search</label>
         <input
           type="text"
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => setQuery(e.target.value.toLowerCase())}
           name="hs-table-with-pagination-search"
           className="py-2 px-3 ps-9 block w-full border border-color-1 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-color-1 disabled:opacity-50 disabled:pointer-events-none dark:bg-color-6 dark:text-gray-400 dark:focus:ring-color-1"
           placeholder={`Cari ${setName}...`}
