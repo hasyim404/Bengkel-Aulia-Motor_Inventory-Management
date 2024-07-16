@@ -1,24 +1,24 @@
-require("dotenv").config();
-const fs = require("fs");
-const path = require("path");
 const express = require("express");
-const FileUpload = require("express-fileupload");
-const bodyParser = require("body-parser");
 const cors = require("cors");
 const { createServer } = require("https");
 const routes = require("./routes");
+const path = require("path");
+const FileUpload = require("express-fileupload");
+const fs = require("fs");
+const bodyParser = require("body-parser");
+require("dotenv").config();
+
+const PORT = process.env.PORT;
+const METHOD = process.env.METHOD;
+const DOMAIN = process.env.DOMAIN;
 
 const options = {
-  key: fs.readFileSync("/etc/letsencrypt/live/auliamotor.suika.pw/privkey.pem"),
-  cert: fs.readFileSync(
-    "/etc/letsencrypt/live/auliamotor.suika.pw/fullchain.pem"
-  ),
+  key: fs.readFileSync(`/etc/letsencrypt/live/${DOMAIN}/privkey.pem`),
+  cert: fs.readFileSync(`/etc/letsencrypt/live/${DOMAIN}/fullchain.pem`),
 };
 
 const app = express();
-const PORT = process.env.PORT;
-const DOMAIN = process.env.DOMAIN;
-const server = createServer(app, options);
+const server = createServer(options, app);
 
 app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
@@ -39,5 +39,5 @@ app.use("/", (req, res) => {
 });
 
 server.listen(PORT, () =>
-  console.log(`Website running:\nPORT : ${PORT}\nURL: ${DOMAIN}`)
+  console.log(`Website running:\nPORT : ${PORT}\nURL: ${METHOD}${DOMAIN}`)
 );
