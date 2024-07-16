@@ -1,12 +1,13 @@
+require("dotenv").config();
+process.env.OPENSSL_CONF;
 const express = require("express");
 const cors = require("cors");
-const { createServer } = require("https");
+const { createServer } = require("http");
 const routes = require("./routes");
 const path = require("path");
 const FileUpload = require("express-fileupload");
 const fs = require("fs");
 const bodyParser = require("body-parser");
-require("dotenv").config();
 
 const PORT = process.env.PORT;
 const METHOD = process.env.METHOD;
@@ -38,6 +39,14 @@ app.use("/", (req, res) => {
   return res.sendFile(path.join(__dirname, "../Frontend/dist", "index.html"));
 });
 
-server.listen(PORT, () =>
-  console.log(`Website running:\nPORT : ${PORT}\nURL: ${METHOD}${DOMAIN}`)
-);
+server.listen(PORT, () => {
+  if (process.env.HOSTING === "true") {
+    console.log(
+      `# Website running (Hosting) #\n- PORT : ${PORT}\n- URL: ${METHOD}${DOMAIN}`
+    );
+  } else {
+    console.log(
+      `# Website running (Local) #\n- PORT : ${PORT}\n- URL: ${METHOD}${DOMAIN}:${PORT}`
+    );
+  }
+});

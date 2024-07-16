@@ -23,8 +23,6 @@
     "mysql2": "^3.6.5",
     "nodemon": "^3.1.4",
     "pdf-creator-node": "^2.3.5",
-    "pdfkit": "^0.15.0",
-    "pdfkit-table": "^0.1.99",
     "sequelize": "^6.35.1"
   }
 }
