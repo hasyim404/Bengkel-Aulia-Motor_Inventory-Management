@@ -474,7 +474,13 @@ const exportPDF = async (req, res) => {
     let pathFile = "./public/pdfs";
     let fileName = `${date}_data-barang.pdf`;
     let fullPath = pathFile + "/" + fileName;
-    let html = fs.readFileSync("./template/barang.html", "utf-8");
+    let html;
+
+    if (process.env.HOSTING === "true") {
+      html = fs.readFileSync("./template/hosting/barang.html", "utf-8");
+    } else {
+      html = fs.readFileSync("./template/barang.html", "utf-8");
+    }
 
     const bitmap = fs.readFileSync("./public/images/main-logo.png");
     const logo = bitmap.toString("base64");
@@ -557,9 +563,9 @@ const exportPDF = async (req, res) => {
       type: "",
     };
 
-    const process = await pdf.create(document, option);
+    const create = await pdf.create(document, option);
 
-    if (process) {
+    if (create) {
       res.download(fullPath, fileName, (err) => {
         if (err) {
           console.error(err);

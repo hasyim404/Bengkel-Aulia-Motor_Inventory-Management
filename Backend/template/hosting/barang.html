@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report Barang</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        font-size: 10px;
+        padding: 0;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 2px solid #000;
+        padding-bottom: 0.5rem;
+      }
+      .logo {
+        flex: 0 0 auto;
+        margin-right: 20px;
+      }
+      .logo img {
+        max-width: 8rem;
+        height: auto;
+      }
+      .instansi {
+        text-align: left;
+        flex: 1;
+        margin-left: 150px;
+        margin-top: -55px;
+      }
+      .nama-instansi {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 3px;
+      }
+      .alamat {
+        margin-bottom: 5px;
+        font-style: italic;
+        font-size: 0.5rem;
+      }
+      .keterangan {
+        font-size: 0.8em;
+      }
+      .status {
+        font-weight: bold;
+        font-size: 0.7rem;
+      }
+      .status p span {
+        margin-left: 40px;
+        font-weight: normal;
+      }
+      .status p:nth-child(2) {
+        margin-top: -15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="logo">
+        <img src="data:image/png;base64,{{logo}}" alt="Logo Instansi" />
+      </div>
+      <div class="instansi">
+        <div class="nama-instansi">BENGKEL AULIA MOTOR</div>
+        <div class="alamat">
+          Kp. Sawah Desa Jabon Mekar, Kec. Parung Kab. Bogor, Jawa Barat. 16330.
+        </div>
+        <!-- <div class="kontak">Telepon: (123) 456-7890 | Email: info@instansi.com</div> -->
+      </div>
+    </div>
+    <div class="garis"></div>
+
+    <div class="status">
+      <p>Perihal <span>: Data Daftar Barang</span></p>
+    </div>
+    <table border="1" cellpadding="5" cellspacing="0" width="100%">
+      <tr style="font-weight: bold">
+        <th>No.</th>
+        <th>Nama&nbsp;Barang</th>
+        <th>Jml Stok</th>
+        <th>Tipe Stok</th>
+        <th>Harga&nbsp;Beli</th>
+        <th>Harga&nbsp;Jual</th>
+        <th>Merk</th>
+        <th>Kategori</th>
+        <th>Ukuran</th>
+        <th>Gambar</th>
+        <th>P.Jawab</th>
+      </tr>
+      {{#each barang}}
+      <tr>
+        <td style="text-align: center">{{this.no}}.</td>
+        <td>{{this.n_barang}}</td>
+        <td style="text-align: center">{{this.jml_stok}}</td>
+        <td style="text-align: center">{{this.tipe_stok}}</td>
+        <td>{{this.h_beli}}</td>
+        <td>{{this.h_jual}}</td>
+        <td style="text-align: center">{{this.merk}}</td>
+        <td style="text-align: center">{{this.kategori}}</td>
+        <td style="text-align: center">{{this.ukuran}}</td>
+        <td style="text-align: center">
+          <img
+            src="{{this.img}}"
+            style="border-radius: 4px; margin: 10px 0"
+            width="65%"
+            alt=""
+          />
+          {{#ifCond this.img '===' ''}}
+          <p>-</p>
+          {{/ifCond}}
+        </td>
+        <td style="text-align: center">{{this.users}}</td>
+      </tr>
+      {{/each}}
+    </table>
+  </body>
+</html>
