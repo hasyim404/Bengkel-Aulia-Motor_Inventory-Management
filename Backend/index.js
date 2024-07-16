@@ -5,15 +5,13 @@ const express = require("express");
 const FileUpload = require("express-fileupload");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const { createServer } = require("http");
+const { createServer } = require("https");
 const routes = require("./routes");
 
 const options = {
-  key: fs.readFileSync(
-    "/etc/letsencrypt/live/aulia-motor.suika.pw/privkey.pem"
-  ),
+  key: fs.readFileSync("/etc/letsencrypt/live/auliamotor.suika.pw/privkey.pem"),
   cert: fs.readFileSync(
-    "/etc/letsencrypt/live/aulia-motor.suika.pw/fullchain.pem"
+    "/etc/letsencrypt/live/auliamotor.suika.pw/fullchain.pem"
   ),
 };
 
