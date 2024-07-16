@@ -549,7 +549,7 @@ const exportPDF = async (req, res) => {
         merk: data.n_merk,
         kategori: data.n_kategori,
         ukuran: data.n_ukuran,
-        users: data.f_name + data.l_name,
+        users: data.f_name + "" + data.l_name,
         img: noImg,
       });
     });

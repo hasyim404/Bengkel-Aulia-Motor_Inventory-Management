@@ -2,7 +2,7 @@ require("dotenv").config();
 process.env.OPENSSL_CONF;
 const express = require("express");
 const cors = require("cors");
-const { createServer } = require("http");
+const { createServer } = require("https");
 const routes = require("./routes");
 const path = require("path");
 const FileUpload = require("express-fileupload");
