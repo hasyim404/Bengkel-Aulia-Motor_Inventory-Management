@@ -16,6 +16,8 @@ import NoData from "../../components/NoData";
 import ENDPOINTS from "../../utils/constants/constant";
 import { Helmet } from "react-helmet-async";
 
+import animationLoading from "../../../src/assets/loading.webp";
+
 const Ukuran = () => {
   const { checkRoleAndNavigate } = useUser();
   const navigate = useNavigate();
@@ -236,7 +238,7 @@ const Ukuran = () => {
                             <div className="w-full py-28">
                               <div className="flex justify-center animate-pulse">
                                 <img
-                                  src="../src/assets/loading.webp"
+                                  src={animationLoading}
                                   style={{ width: "50%" }}
                                   alt=""
                                 />

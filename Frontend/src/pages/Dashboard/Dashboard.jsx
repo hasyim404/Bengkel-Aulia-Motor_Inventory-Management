@@ -19,6 +19,8 @@ import NoData from "../../components/NoData";
 import ENDPOINTS from "../../utils/constants/constant";
 
 import { Helmet } from "react-helmet-async";
+import animationLoading from "../../../src/assets/loading.webp";
+import noPreview from "../../../src/assets/no-preview.png";
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -198,7 +200,7 @@ const Dashboard = () => {
                             <div className="w-full py-28">
                               <div className="flex justify-center animate-pulse">
                                 <img
-                                  src="./src/assets/loading.webp"
+                                  src={animationLoading}
                                   style={{ width: "50%" }}
                                   alt=""
                                 />
@@ -265,7 +267,7 @@ const Dashboard = () => {
                                                 src={
                                                   item.img
                                                     ? item.img
-                                                    : "./src/assets/no-preview.png"
+                                                    : noPreview
                                                 }
                                               />
                                             </Zoom>
@@ -319,7 +321,7 @@ const Dashboard = () => {
                   <div className="w-full py-28">
                     <div className="flex justify-center animate-pulse">
                       <img
-                        src="./src/assets/loading.webp"
+                        src={animationLoading}
                         style={{ width: "50%" }}
                         alt=""
                       />

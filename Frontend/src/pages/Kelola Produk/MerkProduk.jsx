@@ -10,8 +10,6 @@ import Zoom from "react-medium-image-zoom";
 import Navbar from "../../components/Navbar/Navbar";
 import MainTitle from "../../components/MainTitle";
 import Subnav from "../../components/Subnav";
-import noPreview from "../../assets/no-preview.png";
-// import urlImg from "../../assets";
 
 import { useUser } from "../../context/UserContext";
 import Pagination from "../../components/Pagination/Pagination";
@@ -19,6 +17,9 @@ import SearchBar from "../../components/SearchBar/SearchBar";
 import NoData from "../../components/NoData";
 import ENDPOINTS from "../../utils/constants/constant";
 import { Helmet } from "react-helmet-async";
+
+import animationLoading from "../../../src/assets/loading.webp";
+import noPreview from "../../../src/assets/no-preview.png";
 
 const MerkProduk = () => {
   const { checkRoleAndNavigate } = useUser();
@@ -267,7 +268,7 @@ const MerkProduk = () => {
                             <div className="w-full py-28">
                               <div className="flex justify-center animate-pulse">
                                 <img
-                                  src="../src/assets/loading.webp"
+                                  src={animationLoading}
                                   style={{ width: "50%" }}
                                   alt=""
                                 />
@@ -332,9 +333,9 @@ const MerkProduk = () => {
                                               <img
                                                 src={
                                                   item.logo == null
-                                                    ? `/src/assets/no-preview.png`
+                                                    ? noPreview
                                                     : item.logo === ""
-                                                    ? `/src/assets/no-preview.png`
+                                                    ? noPreview
                                                     : item.logo
                                                 }
                                                 className="w-20 border border-color-2 shadow-sm rounded-sm"
@@ -551,10 +552,10 @@ const MerkProduk = () => {
                                                                 preview === ""
                                                                   ? currentItem.logo ===
                                                                     null
-                                                                    ? `../src/assets/no-preview.png`
+                                                                    ? noPreview
                                                                     : currentItem.logo ===
                                                                       ""
-                                                                    ? `../src/assets/no-preview.png`
+                                                                    ? noPreview
                                                                     : currentItem.logo
                                                                   : preview
                                                               }
@@ -723,7 +724,7 @@ const MerkProduk = () => {
                                                   src={
                                                     preview
                                                       ? preview
-                                                      : `../src/assets/no-preview.png`
+                                                      : noPreview
                                                   }
                                                   className="w-24 p-1 rounded-s-md border border-color-2 disabled:opacity-50 disabled:pointer-events-none dark:bg-color-2 dark:text-gray-400 dark:focus:ring-color-2"
                                                 />

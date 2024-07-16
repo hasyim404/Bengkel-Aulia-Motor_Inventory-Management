@@ -26,6 +26,9 @@ import Select from "react-select";
 import ENDPOINTS from "../../utils/constants/constant";
 import { Helmet } from "react-helmet-async";
 
+import animationLoading from "../../../src/assets/loading.webp";
+import noPreview from "../../../src/assets/no-preview.png";
+
 const KelolaBarang = () => {
   const { checkRoleAndNavigate, getUserData } = useUser();
   const navigate = useNavigate();
@@ -471,7 +474,7 @@ const KelolaBarang = () => {
                             <div className="w-full py-28">
                               <div className="flex justify-center animate-pulse">
                                 <img
-                                  src="./src/assets/loading.webp"
+                                  src={animationLoading}
                                   style={{ width: "50%" }}
                                   alt=""
                                 />
@@ -531,9 +534,9 @@ const KelolaBarang = () => {
                                                 className="w-20 border border-color-2 shadow-sm rounded-sm"
                                                 src={
                                                   item.img === null
-                                                    ? "./src/assets/no-preview.png"
+                                                    ? noPreview
                                                     : item.img === ""
-                                                    ? "./src/assets/no-preview.png"
+                                                    ? noPreview
                                                     : item.img
                                                 }
                                               />
@@ -847,10 +850,10 @@ const KelolaBarang = () => {
                                                                 preview === ""
                                                                   ? currentItem.img ===
                                                                     null
-                                                                    ? `./src/assets/no-preview.png`
+                                                                    ? noPreview
                                                                     : currentItem.img ===
                                                                       ""
-                                                                    ? `./src/assets/no-preview.png`
+                                                                    ? noPreview
                                                                     : currentItem.img
                                                                   : preview
                                                               }
@@ -1289,7 +1292,7 @@ const KelolaBarang = () => {
                                                   src={
                                                     preview
                                                       ? preview
-                                                      : `./src/assets/no-preview.png`
+                                                      : noPreview
                                                   }
                                                 />
                                               </Zoom>

@@ -7,6 +7,9 @@ import { faLock, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import ENDPOINTS from "../../utils/constants/constant";
 
+import mainLogo from "../../../src/assets/main-logo.svg";
+import loginImg from "../../../src/assets/login-img.svg";
+
 const authService = {
   login: async (email, password) => {
     try {
@@ -103,7 +106,7 @@ const Login = () => {
                   <div className="border-4 border-color-1 rounded-2xl py-10 px-10 border-w">
                     <img
                       className="w-80 h-auto m-auto"
-                      src="./src/assets/main-logo.svg"
+                      src={mainLogo}
                       alt="Logo"
                     />
                     <div className="relative flex py-5 items-center">
@@ -195,7 +198,7 @@ const Login = () => {
                 <div className="bg-color-3 col-span-7 p-10 rounded-r-3xl flex justify-center items-center">
                   <img
                     className="w-100 h-auto m-auto p-10"
-                    src="./src/assets/login-img.svg"
+                    src={loginImg}
                     alt="add-img"
                   />
                 </div>

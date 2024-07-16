@@ -79,7 +79,7 @@ const Navbar = (props) => {
                 href="#"
                 aria-label="Brand"
               >
-                <img src="./src/assets/main-logo.svg" width={200} alt="" />
+                <img src={logo} width={200} alt="" />
               </a>
             </div>
 
