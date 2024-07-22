@@ -35,7 +35,7 @@ const findPengeluaranById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const data = await query(`SELECT * FROM Pengeluaran WHERE id = ?`, [id]);
+    const data = await query(`SELECT * FROM pengeluaran WHERE id = ?`, [id]);
 
     if (data.length > 0) {
       return res.status(200).json({
