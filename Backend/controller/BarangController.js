@@ -401,19 +401,20 @@ const updateBarang = async (req, res) => {
     const formattedDate = date.toISOString().split("T")[0];
 
     let qtyDifference = jml_stok - previousStock;
-    let financialImpact = Math.abs(qtyDifference) * h_beli;
+    let outFinancialImpact = Math.abs(qtyDifference) * h_beli;
+    let inFinancialImpact = Math.abs(qtyDifference) * h_jual;
 
     if (qtyDifference > 0) {
       // Stock increased, this is an expense
       await query(
         "INSERT INTO pengeluaran (tgl, nama, qty, pengeluaran) VALUES (?,?,?,?)",
-        [formattedDate, n_barang, qtyDifference, financialImpact]
+        [formattedDate, n_barang, qtyDifference, outFinancialImpact]
       );
     } else if (qtyDifference < 0) {
       // Stock decreased, this is an income
       await query(
         "INSERT INTO pemasukan (tgl, nama, qty, pemasukan) VALUES (?,?,?,?)",
-        [formattedDate, n_barang, Math.abs(qtyDifference), financialImpact]
+        [formattedDate, n_barang, Math.abs(qtyDifference), inFinancialImpact]
       );
     }
 
