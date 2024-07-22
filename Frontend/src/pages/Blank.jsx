@@ -23,10 +23,10 @@ const Blank = () => {
             404
           </h1>
           <p className="mt-3 text-color-5 dark:text-color-5">
-            Oops, something went wrong.
+            Oops, mungkin ada yang salah...
           </p>
           <p className="text-color-5 dark:text-color-5">
-            Sorry, we couldn't find your page.
+            Halaman tidak dapat ditemukan.
           </p>
           <div className="mt-5 flex flex-col justify-center items-center gap-2 sm:flex-row sm:gap-3">
             <NavLink
@@ -46,9 +46,8 @@ const Blank = () => {
                 strokeLinejoin="round"
               >
                 <path d="m15 18-6-6 6-6" />
-                onClick={handleGoBack}
               </svg>
-              Back to examples
+              Kembali
             </NavLink>
           </div>
         </div>
